@@ -13,7 +13,8 @@ $ python3 -m pip install -U git+https://github.com/phildubach/serports@main
 ## Running `lser`
 
 When installing the package using pip as described above, a new console script
-entry point named `lser` is created.
+entry point named `lser` is created and linked from $HOME/.local/bin, which
+should be on the $PATH.
 
 Running `lser` without arguments will list all USB serial ports along with
 the vendor and model information. The list is ordered by initialization time,
@@ -22,7 +23,8 @@ newest entry last.
 To keep listing devices as they get added or removed, run `lser -f` or `lser
 --follow`. Abort with Ctrl-C.
 
-`lser -l` or `lser --last` lists only the last added device. This can be useful
+`lser -l` or `lser --last` lists only the last added device. Only the device
+file is returned, without vendor or model information. This can be useful
 for starting a terminal program connected to a recently added device, e.g.
 
 ```
