@@ -60,10 +60,20 @@ class SerialDevices():
         print(found.dev)
         return 0
 
+    def wait(self):
+        monitor = pyudev.Monitor.from_netlink(self.context)
+        monitor.filter_by('tty')
+        while True:
+            device = monitor.poll()
+            if device.action == 'add':
+                print(device.properties['DEVNAME'])
+                return 0
+
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('-l', '--last', help='Only print last added device name', action='store_true')
     parser.add_argument('-f', '--follow', help='Print devices as they get added', action='store_true')
+    parser.add_argument('-w', '--wait', help='Wait for new device and return name', action='store_true')
     args = parser.parse_args()
     serial_devices = SerialDevices()
     if args.last:
@@ -71,9 +81,15 @@ def main():
     elif args.follow:
         try:
             serial_devices.follow()
+            ret = 0
         except KeyboardInterrupt:
-            pass
-        ret = 0
+            ret = 1
+    elif args.wait:
+        try:
+            serial_devices.wait()
+            ret = 0
+        except KeyboardInterrupt:
+            ret = 1
     else:
         ret = serial_devices.list()
     sys.exit(ret)
