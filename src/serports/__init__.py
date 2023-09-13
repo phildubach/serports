@@ -9,10 +9,11 @@ class SerialDevice():
         self.dev = device.properties['DEVNAME']
         self.vendor = device.properties['ID_VENDOR']
         self.model = device.properties['ID_MODEL']
+        self.serial = device.properties.get('ID_SERIAL_SHORT', '')
         self.initialized = device.properties.asint('USEC_INITIALIZED')
 
     def __str__(self):
-        return '{0:16} {1:32} {2:32}'.format(self.dev, self.vendor, self.model)
+        return f'{self.dev:16} {self.vendor:32} {self.model:32} {self.serial:16}'
 
     def __lt__(self, other):
         return self.initialized < other.initialized
@@ -22,7 +23,7 @@ def printDevice(dev):
         print('>>>', prop, dev.properties[prop])
 
 class SerialDevices():
-    
+
     def __init__(self):
         self.context = pyudev.Context()
         self.devices = []
